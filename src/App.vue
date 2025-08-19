@@ -22,33 +22,24 @@ const filteredProducts=computed(()=>{
   )
 })
 
-// function filterToTitle(){
-//   filteredProducts.value=products.value.filter(
-//     x=>x.title.toLowerCase().includes(searchTitle.value.toLowerCase())
-//   );
-//   // filteredProducts.value=products.value.filter(
-//   //   x=>(Number(x.price)>priseFrom.value && Number(x.price)<priseTo.value)
-//   // );
-// }
-
-onMounted(() => {
-    fetch('/src/assets/products.json')
-    .then(res=>res.json())
-    .then(data=>{
-      products.value=data
-      //filteredProducts.value=products.value
-    });
-  })
-
-// onMounted(async() => {
-//   try{
-//     const response=await fetch('https://fakestoreapi.com/products');
-//     products.value=await response.json();
-//   }
-//   catch(error){
-//     console.log("Ошибка загрузки:", error);
-//   };
+// onMounted(() => {
+//     fetch('/src/assets/products.json')
+//     .then(res=>res.json())
+//     .then(data=>{
+//       products.value=data
+//       //filteredProducts.value=products.value
+//     });
 //   })
+
+onMounted(async() => {
+  try{
+    const response=await fetch('https://fakestoreapi.com/products');
+    products.value=await response.json();
+  }
+  catch(error){
+    console.log("Ошибка загрузки:", error);
+  };
+  })
   
 </script>
 
