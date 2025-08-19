@@ -3,9 +3,11 @@ import { ref } from 'vue';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
 
+const phoneRegExp = /^(\+7|8)\s*$$\d{3}$$\s*\d{3}-\d{2}-\d{2}$/;
 const schema = yup.object({
-  email: yup.string().email().required(),
-  name: yup.string().required(),
+  Email: yup.string().email('Введите корректный Email').required('Это поле должно быть заполнено!'),
+  FIO: yup.string().required('Это поле должно быть заполнено!'),
+  Phone: yup.string().required('Это поле должно быть заполнено!').matches(phoneRegExp,'Введите корректный номер в формате +7 (999) 123-45-67'),
 });
 
 const props = defineProps(["products"])
@@ -24,12 +26,12 @@ const resultText = ref('')
 function validateEmail(value) {
       // if the field is empty
       if (!value) {
-        return 'This field is required';
+        return 'Это поле должно быть заполнено!';
       }
       // if the field is not a valid email
       const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
       if (!regex.test(value)) {
-        return 'This field must be a valid email';
+        return 'Введите корректный Email';
       }
     }
 async function submitOrder(){
@@ -60,7 +62,7 @@ async function submitOrder(){
 </script>
 
 <template>
-    <Form :validation-schema="schema">
+    <Form :validation-schema="schema" @submit="submitOrder">
     <div class="order-form-wrapper">
     <h2>Оформление заказа</h2>
 
@@ -76,12 +78,13 @@ async function submitOrder(){
 
     <div class="form-group">
       <label>Имя</label>
-      <input
+    <Field 
+      name="FIO"
        type="text"
        v-model="name" 
        class="form-control" 
-       placeholder="Иван Иванов"
        />
+       <ErrorMessage name="FIO"/>
     </div>
 
     <div class="form-group">
@@ -89,13 +92,23 @@ async function submitOrder(){
       <Field
         name="Email"
         type="email"
+
+        v-model="email"
+        class="form-control"
         />
-       <ErrorMessage name="email"/>
+       <ErrorMessage name="Email"/>
+
     </div>
 
     <div class="form-group">
       <label>Телефон</label>
-      <input type="tel" v-model="phone" class="form-control" placeholder="+7 (999) 123-45-67" />
+      <Field
+      type="tel"
+      name="Phone"
+      v-model="phone"
+      class="form-control"
+      placeholder="+7 (999) 123-45-67" />
+      <ErrorMessage name="Phone"/>
     </div>
 
     <div class="card-section">
@@ -152,7 +165,7 @@ async function submitOrder(){
     </div>
 
     <div class="form-actions">
-      <button type="button" @click="submitOrder" class="btn btn-primary">
+      <button type="button" class="btn btn-primary">
         Отправить заказ
       </button>
     </div>
